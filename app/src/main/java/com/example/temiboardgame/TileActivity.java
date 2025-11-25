@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -26,7 +27,6 @@ public class TileActivity extends AppCompatActivity {
         tvTileDescription = findViewById(R.id.tvTileDescription);
         btnGoResult = findViewById(R.id.btnGoResult);
 
-        // MainActivity에서 보낸 게임 상태 받기
         Intent receivedIntent = getIntent();
         position = receivedIntent.getIntExtra("position", 0);
         lapCount = receivedIntent.getIntExtra("lapCount", 0);
@@ -38,8 +38,22 @@ public class TileActivity extends AppCompatActivity {
         tvTileTitle.setText(title);
         tvTileDescription.setText(desc);
 
-        // Temi에게 설명 읽히기 (지금은 Log만)
         TemiController.speakForTile(position, desc);
+
+        // ✅ 무인도(4번 칸) 도착 시 — 성공/실패 화면 없이 자동 이동
+        if (position == 4) {
+            btnGoResult.setVisibility(View.GONE);
+
+            tvTileDescription.postDelayed(() -> {
+                Intent goMain = new Intent(TileActivity.this, MainActivity.class);
+                goMain.putExtra("position", position);
+                goMain.putExtra("lapCount", lapCount);
+                goMain.putExtra("skipTurn", true); // ✅ 다음 턴 쉬기
+                startActivity(goMain);
+                finish();
+            }, 2000);
+            return;
+        }
 
         btnGoResult.setOnClickListener(v -> {
             Intent goResult = new Intent(TileActivity.this, ResultActivity.class);
