@@ -9,17 +9,23 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Temi">
-        <activity android:name=".ResultActivity"></activity>
+
+        <!-- ✅ 새로 추가된 화면 등록 -->
+        <activity android:name=".GameFinishActivity" />
+        <activity android:name=".CongratsActivity" />
+
+        <activity android:name=".ResultActivity" />
         <activity android:name=".TileActivity" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

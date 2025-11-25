@@ -13,6 +13,10 @@ public class TileActivity extends AppCompatActivity {
     private TextView tvTileDescription;
     private Button btnGoResult;
 
+    private int position;
+    private int lapCount;
+    private boolean skipTurn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,9 +26,11 @@ public class TileActivity extends AppCompatActivity {
         tvTileDescription = findViewById(R.id.tvTileDescription);
         btnGoResult = findViewById(R.id.btnGoResult);
 
-        // MainActivity에서 보낸 현재 칸 번호 받기
+        // MainActivity에서 보낸 게임 상태 받기
         Intent receivedIntent = getIntent();
-        int position = receivedIntent.getIntExtra("position", 0);
+        position = receivedIntent.getIntExtra("position", 0);
+        lapCount = receivedIntent.getIntExtra("lapCount", 0);
+        skipTurn = receivedIntent.getBooleanExtra("skipTurn", false);
 
         String title = TileInfoProvider.getTitle(position);
         String desc = TileInfoProvider.getDescription(position);
@@ -32,13 +38,16 @@ public class TileActivity extends AppCompatActivity {
         tvTileTitle.setText(title);
         tvTileDescription.setText(desc);
 
+        // Temi에게 설명 읽히기 (지금은 Log만)
         TemiController.speakForTile(position, desc);
 
         btnGoResult.setOnClickListener(v -> {
             Intent goResult = new Intent(TileActivity.this, ResultActivity.class);
             goResult.putExtra("position", position);
+            goResult.putExtra("lapCount", lapCount);
+            goResult.putExtra("skipTurn", skipTurn);
             startActivity(goResult);
+            finish();
         });
-
     }
 }

@@ -11,6 +11,10 @@ public class ResultActivity extends AppCompatActivity {
     private Button btnSuccess;
     private Button btnFail;
 
+    private int position;
+    private int lapCount;
+    private boolean skipTurn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -19,22 +23,27 @@ public class ResultActivity extends AppCompatActivity {
         btnSuccess = findViewById(R.id.btnSuccess);
         btnFail = findViewById(R.id.btnFail);
 
-        // ★ 여기: getIntent() 결과를 받는 변수 이름은 receivedIntent 등으로 만든다
         Intent receivedIntent = getIntent();
-        int position = receivedIntent.getIntExtra("position", 1);
+        position = receivedIntent.getIntExtra("position", 1);
+        lapCount = receivedIntent.getIntExtra("lapCount", 0);
+        skipTurn = receivedIntent.getBooleanExtra("skipTurn", false);
 
-        // 성공 → 다시 MainActivity (주사위 굴리기 화면)
+        // ✅ 성공 → 다음 주사위 굴리기 화면(MainActivity)
         btnSuccess.setOnClickListener(v -> {
             Intent goDice = new Intent(ResultActivity.this, MainActivity.class);
             goDice.putExtra("position", position);
+            goDice.putExtra("lapCount", lapCount);
+            goDice.putExtra("skipTurn", skipTurn);
             startActivity(goDice);
             finish();
         });
 
-        // 실패 → 같은 칸 TileActivity로 돌아가기
+        // ✅ 실패 → 같은 칸 다시(TileActivity)
         btnFail.setOnClickListener(v -> {
             Intent goTile = new Intent(ResultActivity.this, TileActivity.class);
             goTile.putExtra("position", position);
+            goTile.putExtra("lapCount", lapCount);
+            goTile.putExtra("skipTurn", skipTurn);
             startActivity(goTile);
             finish();
         });
